@@ -232,6 +232,10 @@
   #include "feature/mmu/mmu2.h"
 #endif
 
+#if HAS_BAFSD
+  #include "feature/mmu/bafsd.h"
+#endif
+
 #if ENABLED(PASSWORD_FEATURE)
   #include "feature/password/password.h"
 #endif
@@ -1516,6 +1520,10 @@ void setup() {
     SETUP_RUN(mmu_init());
   #endif
 
+  #if HAS_BAFSD
+    SETUP_RUN(bafsd_init());
+  #endif
+  
   #if HAS_FANMUX
     SETUP_RUN(fanmux_init());
   #endif

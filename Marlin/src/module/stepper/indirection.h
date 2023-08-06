@@ -544,6 +544,12 @@ void reset_stepper_drivers();    // Called by settings.load / settings.reset
   #define   NORM_E_DIR(E)   do{ E0_DIR_WRITE(TEST(E, 0) ? DISABLED(INVERT_E0_DIR):  ENABLED(INVERT_E0_DIR)); }while(0)
   #define    REV_E_DIR(E)   do{ E0_DIR_WRITE(TEST(E, 0) ?  ENABLED(INVERT_E0_DIR): DISABLED(INVERT_E0_DIR)); }while(0)
 
+#elif HAS_BAFSD  // One multiplexed stepper driver
+
+  #define E_STEP_WRITE(E,V) E0_STEP_WRITE(V)
+  #define   NORM_E_DIR(E)   E0_DIR_WRITE(DISABLED(INVERT_E0_DIR))
+  #define    REV_E_DIR(E)   E0_DIR_WRITE( ENABLED(INVERT_E0_DIR))
+
 #elif E_STEPPERS > 1
 
   #if E_STEPPERS > 7

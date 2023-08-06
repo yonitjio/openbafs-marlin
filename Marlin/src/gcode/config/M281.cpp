@@ -47,8 +47,36 @@ void GcodeSuite::M281() {
         return;
       }
     #endif
-    if (parser.seenval('L')) servo_angles[servo_index][0] = parser.value_int();
-    if (parser.seenval('U')) servo_angles[servo_index][1] = parser.value_int();
+    #if !HAS_BAFSD
+      if (parser.seenval('L')) servo_angles[servo_index][0] = parser.value_int();
+      if (parser.seenval('U')) servo_angles[servo_index][1] = parser.value_int();
+    #else
+      if (servo_index == BAFSD_SERVO_NR){
+        if (parser.seenval('A')) bafsd_servo_angles[0] = parser.value_int();
+        if (parser.seenval('B')) bafsd_servo_angles[1] = parser.value_int();
+        #if EXTRUDERS > 2
+          if (parser.seenval('C')) bafsd_servo_angles[2] = parser.value_int();
+          #if EXTRUDERS > 3
+            if (parser.seenval('D')) bafsd_servo_angles[3] = parser.value_int();
+            #if EXTRUDERS > 4
+              if (parser.seenval('E')) bafsd_servo_angles[4] = parser.value_int();
+              #if EXTRUDERS > 5
+                if (parser.seenval('F')) bafsd_servo_angles[5] = parser.value_int();
+                #if EXTRUDERS > 6
+                  if (parser.seenval('G')) bafsd_servo_angles[6] = parser.value_int();
+                  #if EXTRUDERS > 7
+                    if (parser.seenval('H')) bafsd_servo_angles[7] = parser.value_int();
+                  #endif
+                #endif
+              #endif
+            #endif
+          #endif
+        #endif
+      } else {
+        if (parser.seenval('L')) servo_angles[servo_index][0] = parser.value_int();
+        if (parser.seenval('U')) servo_angles[servo_index][1] = parser.value_int();
+      }
+    #endif  
   }
   else
     SERIAL_ERROR_MSG("Servo ", servo_index, " out of range");
@@ -68,9 +96,40 @@ void GcodeSuite::M281_report(const bool forReplay/*=true*/) {
         case SWITCHING_NOZZLE_SERVO_NR:
       #elif ENABLED(BLTOUCH) || (HAS_Z_SERVO_PROBE && defined(Z_SERVO_ANGLES))
         case Z_PROBE_SERVO_NR:
+      #elif HAS_BAFSD
+        case BAFSD_SERVO_NR:
       #endif
           report_echo_start(forReplay);
-          SERIAL_ECHOLNPGM("  M281 P", i, " L", servo_angles[i][0], " U", servo_angles[i][1]);
+          #if HAS_BAFSD
+            if (i == BAFSD_SERVO_NR) {
+              SERIAL_ECHOLNPGM("  M281 P", i, 
+                " A", bafsd_servo_angles[0], 
+                " B", bafsd_servo_angles[1]
+                #if EXTRUDERS > 2
+                  , " C", bafsd_servo_angles[2]
+                  #if EXTRUDERS > 3
+                    ," D", bafsd_servo_angles[3]
+                    #if EXTRUDERS > 4
+                      , " E", bafsd_servo_angles[4]
+                      #if EXTRUDERS > 5
+                        , " F", bafsd_servo_angles[5]
+                        #if EXTRUDERS > 6
+                          , " G", bafsd_servo_angles[6]
+                          #if EXTRUDERS > 7
+                            ," H", bafsd_servo_angles[7]
+                          #endif
+                        #endif
+                      #endif
+                    #endif
+                  #endif
+                #endif
+                );
+            } else {
+              SERIAL_ECHOLNPGM("  M281 P", i, " L", servo_angles[i][0], " U", servo_angles[i][1]);
+            }
+          #else
+              SERIAL_ECHOLNPGM("  M281 P", i, " L", servo_angles[i][0], " U", servo_angles[i][1]);
+          #endif
     }
   }
 }

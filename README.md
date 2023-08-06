@@ -15,6 +15,10 @@
 Additional documentation can be found at the [Marlin Home Page](https://marlinfw.org/).
 Please test this firmware and let us know if it misbehaves in any way. Volunteers are standing by!
 
+
+## Custom Marlin for BAFS
+This repo is for using BAFS with Marlin. Only this branch is modified to support BAFS.
+
 ## Marlin 2.1
 
 Marlin 2.1 continues to support both 32-bit ARM and 8-bit AVR boards while adding support for up to 9 coordinated axes and to up to 8 extruders.
