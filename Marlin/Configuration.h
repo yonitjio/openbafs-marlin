@@ -396,7 +396,9 @@
 #if (MMU_MODEL == BAFSD)
   #define BAFSD_SERVO_NR 0
   #define BAFSD_SERVO_DELAY 6500
-  #define BAFSD_SERVO_ANGLES { 0, 68, 113, 180 } // Angles for E0, E1[, E2, E3]
+  #define BAFSD_SERVO_ANGLES { 54, 90, 126, 180 } // Angles for E0, E1[, E2, E3], Must not be the same as reset angle
+  #define BAFSD_RESET_SERVO_DELAY 100
+  #define BAFSD_RESET_SERVO_ANGLE 0
 #endif
 
 // @section psu control

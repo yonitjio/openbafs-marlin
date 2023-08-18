@@ -22,4 +22,5 @@
 #pragma once
 
 void bafsd_init();
-void select_port(const uint8_t e);
+void bafsd_select_port(const uint8_t e);
+void bafsd_reset();

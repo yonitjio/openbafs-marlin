@@ -19,6 +19,9 @@ Please test this firmware and let us know if it misbehaves in any way. Volunteer
 ## Custom Marlin for BAFS
 This repo is for using BAFS with Marlin. Only this branch is modified to support BAFS.
 
+#### Update 2023-08-18:
+- Custom gcode M709. This will reset bafs. Use this at the start of a print. 
+
 ## Marlin 2.1
 
 Marlin 2.1 continues to support both 32-bit ARM and 8-bit AVR boards while adding support for up to 9 coordinated axes and to up to 8 extruders.

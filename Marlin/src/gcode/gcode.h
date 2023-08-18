@@ -270,6 +270,7 @@
  * M672 - Set/Reset Duet Smart Effector's sensitivity. (Requires DUET_SMART_EFFECTOR and SMART_EFFECTOR_MOD_PIN)
  * M701 - Load filament (Requires FILAMENT_LOAD_UNLOAD_GCODES)
  * M702 - Unload filament (Requires FILAMENT_LOAD_UNLOAD_GCODES)
+ * M709 - Reset BAFSD
  * M808 - Set or Goto a Repeat Marker (Requires GCODE_REPEAT_MARKERS)
  * M810-M819 - Define/execute a G-code macro (Requires GCODE_MACROS)
  * M851 - Set Z probe's XYZ offsets in current units. (Negative values: X=left, Y=front, Z=below)
@@ -993,6 +994,10 @@ private:
 
   #if HAS_PRUSA_MMU2
     static void M403();
+  #endif
+
+  #if HAS_BAFSD
+    static void M709();
   #endif
 
   #if ENABLED(FILAMENT_WIDTH_SENSOR)

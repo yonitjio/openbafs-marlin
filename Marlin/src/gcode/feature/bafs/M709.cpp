@@ -20,40 +20,19 @@
  *
  */
 
-#include "../../inc/MarlinConfig.h"
+#include "../../../inc/MarlinConfigPre.h"
 
 #if HAS_BAFSD
 
-#include "../../MarlinCore.h"
-#include "../../module/planner.h"
-#include "../../module/stepper.h"
-#include "../../module/servo.h"
-#include "../../gcode/queue.h"
+#include "../../gcode.h"
+#include "../../../feature/mmu/bafsd.h"
 
-void bafsd_init() {
-}
-
-void bafsd_reset() {
-  char msg[22];
-  sprintf_P(msg, PSTR("M117 BAFS Reset"));
-  queue.inject(msg);  
-
-  servo[BAFSD_SERVO_NR].move(BAFSD_RESET_SERVO_ANGLE);
-  safe_delay(BAFSD_RESET_SERVO_DELAY);
-  servo[BAFSD_SERVO_NR].detach();
-}
-
-void bafsd_select_port(const uint8_t e) {
-  char msg[22];
-  sprintf_P(msg, PSTR("M117 BAFS Port: %u"), e);
-  queue.inject(msg);  
-
-  planner.synchronize();
-  stepper.disable_e_steppers();
-
-  servo[BAFSD_SERVO_NR].move(bafsd_servo_angles[e]);
-  safe_delay(BAFSD_SERVO_DELAY);
-  servo[BAFSD_SERVO_NR].detach();
+/**
+ * M403: Reset BAFSD
+ *
+ */
+void GcodeSuite::M709() {
+    bafsd_reset();
 }
 
 #endif // HAS_BAFSD
