@@ -392,11 +392,21 @@
  * See additional options in Configuration_adv.h.
  * :["PRUSA_MMU1", "PRUSA_MMU2", "PRUSA_MMU2S", "BAFSD", "EXTENDABLE_EMU_MMU2", "EXTENDABLE_EMU_MMU2S"]
  */
+#define DEBUG_BAFSD
 #define MMU_MODEL BAFSD
 #if (MMU_MODEL == BAFSD)
+  #define BAFSD_FILAMENT_SENSOR
+  #if ENABLED(BAFSD_FILAMENT_SENSOR)
+    #define BAFSD_SENSOR_TO_GEAR_DISTANCE 40
+    #define BAFSD_LOAD_FEEDRATE 1200
+    #define BAFSD_UNLOAD_FEEDRATE 1200
+    #define BAFSD_ATTEMPTS_NR 5
+    #define BAFSD_FEED_SERVO_ANGLE 45
+    #define BAFSD_FEED_SERVO_DELAY 2500
+  #endif
   #define BAFSD_SERVO_NR 0
   #define BAFSD_SERVO_DELAY 6500
-  #define BAFSD_SERVO_ANGLES { 54, 90, 126, 180 } // Angles for E0, E1[, E2, E3], Must not be the same as reset angle
+  #define BAFSD_SERVO_ANGLES { 75, 105, 135, 180 } // { 54, 90, 126, 180 } // Angles for E0, E1[, E2, E3], Must not be the same as reset angle
   #define BAFSD_RESET_SERVO_DELAY 100
   #define BAFSD_RESET_SERVO_ANGLE 0
 #endif
@@ -2247,7 +2257,7 @@
  *    P1  Raise the nozzle always to Z-park height.
  *    P2  Raise the nozzle by Z-park amount, limited to Z_MAX_POS.
  */
-//#define NOZZLE_PARK_FEATURE
+#define NOZZLE_PARK_FEATURE
 
 #if ENABLED(NOZZLE_PARK_FEATURE)
   // Specify a park position as { X, Y, Z_raise }
@@ -2582,7 +2592,7 @@
 //
 // Note: Usually sold with a white PCB.
 //
-//#define REPRAP_DISCOUNT_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 //
 // GT2560 (YHCB2004) LCD Display

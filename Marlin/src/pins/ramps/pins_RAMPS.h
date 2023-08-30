@@ -283,7 +283,13 @@
 
 // RAMPS 1.4 DIO 4 on the servos connector
 #ifndef FIL_RUNOUT_PIN
-  #define FIL_RUNOUT_PIN                       4
+  #if !ENABLED(BAFSD_FILAMENT_SENSOR)
+    #define FIL_RUNOUT_PIN                       4
+  #endif
+#endif
+
+#if ENABLED(BAFSD_FILAMENT_SENSOR)
+  #define BAFSD_SENSOR_PIN                     4
 #endif
 
 #ifndef PS_ON_PIN

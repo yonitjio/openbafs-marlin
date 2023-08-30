@@ -32,7 +32,7 @@
  *
  */
 void GcodeSuite::M709() {
-    bafsd_reset();
+    bafs_d.reset();
 }
 
 #endif // HAS_BAFSD

@@ -21,6 +21,21 @@
  */
 #pragma once
 
-void bafsd_init();
-void bafsd_select_port(const uint8_t e);
-void bafsd_reset();
+class BAFS_D {
+public:
+  BAFS_D();
+  static void init();
+  static void select_port(const uint8_t e);
+  static void reset();
+
+private:
+  static uint8_t port;
+  static bool firstRun;
+
+  #if ENABLED(BAFSD_FILAMENT_SENSOR)
+    static bool load_to_sensor();
+  #endif
+  static bool too_cold(const uint8_t e);
+};
+
+extern BAFS_D bafs_d;

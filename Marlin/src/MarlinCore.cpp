@@ -1521,7 +1521,7 @@ void setup() {
   #endif
 
   #if HAS_BAFSD
-    SETUP_RUN(bafsd_init());
+    SETUP_RUN(bafs_d.init());
   #endif
   
   #if HAS_FANMUX
