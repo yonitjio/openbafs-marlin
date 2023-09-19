@@ -17,7 +17,7 @@ Please test this firmware and let us know if it misbehaves in any way. Volunteer
 
 
 ## Custom Marlin for BAFS
-This repo is for using BAFS with Marlin. Only this branch is modified to support BAFS.
+This repo is for using BAFS with Marlin. This branch uses PWM.
 
 #### Update 2023-08-18:
 - Custom gcode M709. This will reset bafs. Use this at the start of a print. 
