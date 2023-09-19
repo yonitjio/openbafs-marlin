@@ -134,6 +134,13 @@ typedef Servo hal_servo_t;
   #define MMU2_SERIAL mmuSerial
 #endif
 
+#ifdef BAFSD_SERIAL_PORT
+  #if !WITHIN(BAFSD_SERIAL_PORT, 0, 3)
+    #error "BAFSD_SERIAL_PORT must be from 0 to 3"
+  #endif
+  #define BAFSD_SERIAL bafsdSerial
+#endif
+
 #ifdef LCD_SERIAL_PORT
   #if !WITHIN(LCD_SERIAL_PORT, 0, 3)
     #error "LCD_SERIAL_PORT must be from 0 to 3."

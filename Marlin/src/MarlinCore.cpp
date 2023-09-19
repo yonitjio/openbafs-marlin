@@ -878,6 +878,9 @@ void idle(const bool no_stepper_sleep/*=false*/) {
   // Update the Průša MMU2
   TERN_(HAS_PRUSA_MMU2, mmu2.mmu_loop());
 
+  // Update BAFSD
+  TERN_(HAS_BAFSD, bafsd.bafsd_loop());
+
   // Handle Joystick jogging
   TERN_(POLL_JOG, joystick.inject_jog_moves());
 
@@ -1521,7 +1524,7 @@ void setup() {
   #endif
 
   #if HAS_BAFSD
-    SETUP_RUN(bafs_d.init());
+    SETUP_RUN(bafsd.init());
   #endif
   
   #if HAS_FANMUX

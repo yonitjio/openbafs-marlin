@@ -545,7 +545,7 @@
 #define PRUSA_MMU1             1
 #define PRUSA_MMU2             2
 #define PRUSA_MMU2S            3
-#define BAFSD                  9
+#define BAFS_D                 9
 #define EXTENDABLE_EMU_MMU2   12
 #define EXTENDABLE_EMU_MMU2S  13
 
@@ -559,7 +559,7 @@
     #define HAS_PRUSA_MMU2 1
     #define HAS_PRUSA_MMU2S 1
   #endif
-  #if MMU_MODEL == BAFSD
+  #if MMU_MODEL == BAFS_D
     #define HAS_BAFSD 1
   #endif
   #if MMU_MODEL >= EXTENDABLE_EMU_MMU2
@@ -1076,7 +1076,7 @@
 #ifdef Z_PROBE_SERVO_NR
   #define HAS_Z_SERVO_PROBE 1
 #endif
-#if ANY(HAS_Z_SERVO_PROBE, SWITCHING_EXTRUDER, SWITCHING_NOZZLE, HAS_BAFSD)
+#if ANY(HAS_Z_SERVO_PROBE, SWITCHING_EXTRUDER, SWITCHING_NOZZLE)
   #define HAS_SERVO_ANGLES 1
 #endif
 #if !HAS_SERVO_ANGLES

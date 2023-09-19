@@ -33,13 +33,7 @@
 hal_servo_t servo[NUM_SERVOS];
 
 #if ENABLED(EDITABLE_SERVO_ANGLES)
-  #if HAS_BAFSD
-    #define NUM_SERVOS_EX NUM_SERVOS - 1
-    uint16_t servo_angles[NUM_SERVOS_EX][2];
-    uint16_t bafsd_servo_angles[EXTRUDERS];
-  #else
     uint16_t servo_angles[NUM_SERVOS][2];
-  #endif
 #endif
 
 void servo_init() {

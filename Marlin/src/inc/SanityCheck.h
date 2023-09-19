@@ -3207,6 +3207,8 @@ static_assert(X_MAX_LENGTH >= X_BED_SIZE, "Movement bounds (X_MIN_POS, X_MAX_POS
     #error "SERIAL_PORT_2 is set to -1, but the MOTHERBOARD has no native USB support. Set SERIAL_PORT_2 to a valid value for your board."
   #elif MMU2_SERIAL_PORT == -1
     #error "MMU2_SERIAL_PORT is set to -1, but the MOTHERBOARD has no native USB support. Set MMU2_SERIAL_PORT to a valid value for your board."
+  #elif BAFSD_SERIAL_PORT == -1
+    #error "BAFSD_SERIAL_PORT is set to -1, but the MOTHERBOARD has no native USB support. Set BAFSD_SERIAL_PORT to a valid value for your board."
   #elif LCD_SERIAL_PORT == -1
     #error "LCD_SERIAL_PORT is set to -1, but the MOTHERBOARD has no native USB support. Set LCD_SERIAL_PORT to a valid value for your board."
   #endif
@@ -3222,6 +3224,19 @@ static_assert(X_MAX_LENGTH >= X_BED_SIZE, "Movement bounds (X_MIN_POS, X_MAX_POS
     #error "MMU2_SERIAL_PORT cannot be the same as SERIAL_PORT_2."
   #elif defined(LCD_SERIAL_PORT) && MMU2_SERIAL_PORT == LCD_SERIAL_PORT
     #error "MMU2_SERIAL_PORT cannot be the same as LCD_SERIAL_PORT."
+  #endif
+#endif
+
+/**
+ * BAFSD require a dedicated serial port
+ */
+#ifdef BAFSD_SERIAL_PORT
+  #if BAFSD_SERIAL_PORT == SERIAL_PORT
+    #error "BAFSD_SERIAL_PORT cannot be the same as SERIAL_PORT."
+  #elif defined(SERIAL_PORT_2) && BAFSD_SERIAL_PORT == SERIAL_PORT_2
+    #error "BAFSD_SERIAL_PORT cannot be the same as SERIAL_PORT_2."
+  #elif defined(LCD_SERIAL_PORT) && BAFSD_SERIAL_PORT == LCD_SERIAL_PORT
+    #error "BAFSD_SERIAL_PORT cannot be the same as LCD_SERIAL_PORT."
   #endif
 #endif
 

@@ -271,6 +271,24 @@
   extern MSerialMMU2 mmuSerial;
 #endif
 
+#ifdef BAFSD_SERIAL_PORT
+  template <uint8_t serial>
+  struct BAFSDSerialCfg {
+    static constexpr int PORT               = serial;
+    static constexpr unsigned int RX_SIZE   = 8;
+    static constexpr unsigned int TX_SIZE   = 8;
+    static constexpr bool XONOFF            = false;
+    static constexpr bool EMERGENCYPARSER   = false;
+    static constexpr bool DROPPED_RX        = false;
+    static constexpr bool RX_FRAMING_ERRORS = false;
+    static constexpr bool MAX_RX_QUEUED     = false;
+    static constexpr bool RX_OVERRUNS       = false;
+  };
+
+  typedef Serial1Class< MarlinSerial< BAFSDSerialCfg<BAFSD_SERIAL_PORT> > > MSerialBAFSD;
+  extern MSerialBAFSD bafsdSerial;
+#endif
+
 #ifdef LCD_SERIAL_PORT
 
   template <uint8_t serial>

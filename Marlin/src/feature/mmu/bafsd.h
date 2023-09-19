@@ -21,21 +21,40 @@
  */
 #pragma once
 
-class BAFS_D {
+#define BAFSD_RX_SIZE  16
+#define BAFSD_TX_SIZE  16
+
+class BAFSD {
 public:
-  BAFS_D();
+  BAFSD();
   static void init();
   static void select_port(const uint8_t e);
   static void reset();
 
+  static void bafsd_loop();
+
 private:
   static uint8_t port;
-  static bool firstRun;
+  static millis_t commandIssueTime;
+  static int timeOut;
+  static uint8_t response;
+  static bool waitingResponse;
+  static char rx_buffer[BAFSD_RX_SIZE], tx_buffer[BAFSD_TX_SIZE];
 
-  #if ENABLED(BAFSD_FILAMENT_SENSOR)
-    static bool load_to_sensor();
-  #endif
+  static bool rx_str(FSTR_P fstr);
+  static void tx_str(FSTR_P fstr);
+  static void tx_printf(FSTR_P ffmt, const int argument);
+  static void tx_printf(FSTR_P ffmt, const int argument1, const int argument2);
+  static void clear_rx_buffer();
+
+  static bool rx_ok();
+  static bool rx_no();
+
+  static void get_response(const int t);
+
+  static uint8_t load_to_sensor();
+  static uint8_t filament_present();
   static bool too_cold(const uint8_t e);
 };
 
-extern BAFS_D bafs_d;
+extern BAFSD bafsd;

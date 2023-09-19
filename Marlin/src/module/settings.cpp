@@ -91,11 +91,7 @@
 #endif
 
 #if HAS_SERVOS && HAS_SERVO_ANGLES
-  #if HAS_BAFSD
-    #define EEPROM_NUM_SERVOS NUM_SERVOS - 1
-  #else
     #define EEPROM_NUM_SERVOS NUM_SERVOS
-  #endif
 #else
   #define EEPROM_NUM_SERVOS NUM_SERVO_PLUGS
 #endif
@@ -302,9 +298,6 @@ typedef struct SettingsDataStruct {
   // SERVO_ANGLES
   //
   uint16_t servo_angles[EEPROM_NUM_SERVOS][2];          // M281 P L U
-  #if HAS_BAFSD
-    uint16_t bafsd_servo_angles[EXTRUDERS];                // M281 P A B C D E F G H
-  #endif 
 
   //
   // Temperature first layer compensation values
@@ -1005,37 +998,8 @@ void MarlinSettings::postprocess() {
       _FIELD_TEST(servo_angles);
       #if !HAS_SERVO_ANGLES
         uint16_t servo_angles[EEPROM_NUM_SERVOS][2] = { { 0, 0 } };
-        #if HAS_BAFSD
-          uint16_t bafsd_servo_angles[EXTRUDERS] = { 
-            0
-            #if EXTRUDERS > 1
-              , 0
-              #if EXTRUDERS > 2
-                , 0
-                #if EXTRUDERS > 3
-                  , 0
-                  #if EXTRUDERS > 4
-                    , 0
-                    #if EXTRUDERS > 5
-                      , 0
-                      #if EXTRUDERS > 6
-                        , 0
-                        #if EXTRUDERS > 7
-                          , 0
-                        #endif
-                      #endif
-                    #endif
-                  #endif
-                #endif
-              #endif
-            #endif
-            };
-        #endif        
       #endif
       EEPROM_WRITE(servo_angles);
-      #if HAS_BAFSD
-        EEPROM_WRITE(bafsd_servo_angles);
-      #endif
     }
 
     //
@@ -2028,19 +1992,10 @@ void MarlinSettings::postprocess() {
         _FIELD_TEST(servo_angles);
         #if ENABLED(EDITABLE_SERVO_ANGLES)
           uint16_t (&servo_angles_arr)[EEPROM_NUM_SERVOS][2] = servo_angles;
-          #if HAS_BAFSD
-            uint16_t (&bafsd_servo_angles_arr)[EXTRUDERS] = bafsd_servo_angles;
-          #endif
         #else
           uint16_t servo_angles_arr[EEPROM_NUM_SERVOS][2];
-          #if HAS_BAFSD
-            uint16_t bafsd_servo_angles_arr[EXTRUDERS];
-          #endif
         #endif
         EEPROM_READ(servo_angles_arr);
-        #if HAS_BAFSD
-          EEPROM_READ(bafsd_servo_angles_arr);
-        #endif
       }
 
       //
@@ -3170,9 +3125,6 @@ void MarlinSettings::reset() {
   // Servo Angles
   //
   TERN_(EDITABLE_SERVO_ANGLES, COPY(servo_angles, base_servo_angles)); // When not editable only one copy of servo angles exists
-  #if HAS_BAFSD
-    TERN_(EDITABLE_SERVO_ANGLES, COPY(bafsd_servo_angles, base_bafsd_servo_angles));
-  #endif
   
   //
   // Probe Temperature Compensation
