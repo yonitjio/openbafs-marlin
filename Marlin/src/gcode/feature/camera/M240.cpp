@@ -27,6 +27,10 @@
 #include "../../gcode.h"
 #include "../../../module/motion.h" // for active_extruder and current_position
 
+#ifdef BAFS_CAM
+#include "../../../feature/mmu/bafsd.h"
+#endif
+
 #if PIN_EXISTS(CHDK)
   millis_t chdk_timeout; // = 0
 #endif
@@ -105,6 +109,7 @@
  *                            See https://www.doc-diy.net/photo/rc-1_hacked/
  *  - PHOTO_SWITCH_POSITION : Bump a physical switch with the X-carriage using a
  *                            configured position, delay, and retract length.
+ *  - BAFS_CAM              : Delegate camera triggering to BAFS
  *
  * PHOTO_POSITION parameters:
  *    A - X offset to the return position
@@ -180,6 +185,10 @@ void GcodeSuite::M240() {
     delay(7.33);
     spin_photo_pin();
 
+  #endif
+
+  #ifdef BAFS_CAM
+    bafsd.trigger_camera(BAFS_CAM_DUR);
   #endif
 
   #ifdef PHOTO_POSITION

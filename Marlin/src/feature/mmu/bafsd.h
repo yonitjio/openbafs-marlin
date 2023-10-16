@@ -30,6 +30,7 @@ public:
   static void init();
   static void select_port(const uint8_t e);
   static void reset();
+  static void trigger_camera(const uint8_t d);
 
   static void bafsd_loop();
 

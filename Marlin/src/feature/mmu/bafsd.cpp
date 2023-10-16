@@ -74,6 +74,14 @@ void BAFSD::reset() {
   BAFSD_SEND("M709");
 }
 
+void BAFSD::trigger_camera(const uint8_t d) {
+  char msg[22];
+  sprintf_P(msg, PSTR("M117 BAFS Trigger Cam"));
+  queue.inject(msg);
+
+  tx_printf(F("M240 D%d\n"), d);
+}
+
 bool BAFSD::too_cold(uint8_t toolID){
   if (TERN0(PREVENT_COLD_EXTRUSION, !DEBUGGING(DRYRUN) && thermalManager.targetTooColdToExtrude(toolID))) {
     SERIAL_ECHO_MSG(STR_ERR_HOTEND_TOO_COLD);
@@ -136,7 +144,16 @@ void BAFSD::select_port(const uint8_t e) {
 
       DEBUG_ECHOLNPGM("Sending T", e, " to BAFSD");
       tx_printf(F("T%d\n"), e);
-      safe_delay(BAFSD_FIL_CHANGE_DURATION);
+
+      DEBUG_ECHOLNPGM("Move extruder motor to help gripping the filament");
+      const uint8_t slowMargin = 1000; // move extruder motor at the last second
+      safe_delay(BAFSD_FIL_CHANGE_DURATION - slowMargin);
+      stepper.enable_extruder();
+      current_position.e += 15;
+      line_to_current_position(MMM_TO_MMS(BAFSD_LOAD_FEEDRATE));
+      planner.synchronize();
+      stepper.disable_extruder();
+
       get_response(BAFSD_TIMEOUT);
       if (response != 1) {
         toolChangeOk = false;
