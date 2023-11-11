@@ -45,6 +45,10 @@
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
 
+#if HAS_BAFSD
+  #include "../../feature/mmu/bafsd.h"
+#endif
+
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
     if (TERN0(HAS_TOUCH_SLEEP, lcd_sleep_task())) return;
@@ -467,6 +471,12 @@ void MenuItem_confirm::draw_select_screen(FSTR_P const yes, FSTR_P const no, con
     tft_string.add(F(" / "));
     tft_string.add(i16tostr3rj(thermalManager.degTargetHotend(extruder)));
     tft_string.add(LCD_STR_DEGREE);
+    #if HAS_BAFSD
+    tft_string.add(" : ");
+    tft_string.add(ui8tostr2(bafsd.current_port()));
+    tft_string.add(" / ");
+    tft_string.add(ui8tostr2(bafsd.next_port()));
+    #endif
     tft_string.trim();
     tft.add_text(tft_string.center(TFT_WIDTH), MENU_TEXT_Y_OFFSET, COLOR_MENU_TEXT, tft_string);
   }

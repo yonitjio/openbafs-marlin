@@ -44,6 +44,7 @@
 
 BAFSD bafsd;
 uint8_t BAFSD::port;
+uint8_t BAFSD::nextPort;
 uint8_t BAFSD::response; // 0 = No, 1 = Yes, 2 = Error, 99 = Waiting for response;
 int BAFSD::timeOut;
 millis_t BAFSD::commandIssueTime;
@@ -53,6 +54,7 @@ char BAFSD::rx_buffer[BAFSD_RX_SIZE], BAFSD::tx_buffer[BAFSD_RX_SIZE];
 
 BAFSD::BAFSD() {
   port = NO_PORT;
+  nextPort = NO_PORT;
   rx_buffer[0] = '\0';
 }
 
@@ -74,12 +76,20 @@ void BAFSD::reset() {
   BAFSD_SEND("M709");
 }
 
-void BAFSD::trigger_camera(const uint8_t d) {
+void BAFSD::trigger_camera(const uint16_t d) {
   char msg[22];
   sprintf_P(msg, PSTR("M117 BAFS Trigger Cam"));
   queue.inject(msg);
 
   tx_printf(F("M240 D%d\n"), d);
+}
+
+uint8_t BAFSD::current_port() {
+  return port;
+}
+
+uint8_t BAFSD::next_port() {
+  return nextPort;
 }
 
 bool BAFSD::too_cold(uint8_t toolID){
@@ -90,7 +100,7 @@ bool BAFSD::too_cold(uint8_t toolID){
   return false;
 }
 
-/* 
+/*
 Using filament sensor:
 1. Filament is expected at parking position, which is just below the sensor
 2. Retract to position before extruder gear: BAFSD_SENSOR_TO_GEAR_DISTANCE
@@ -102,22 +112,24 @@ void BAFSD::select_port(const uint8_t e) {
 
     if (port == NO_PORT) {
       port = e;
+      nextPort = NO_PORT;
       tx_printf(F("T%d\n"), e);
       get_response(BAFSD_TIMEOUT); // Use default timeout, this should not take long
       if (response == 1) {
         sprintf_P(msg, PSTR("M117 BAFS Port: %u"), e);
-        queue.inject(msg);  
+        queue.inject(msg);
       } else {
           sprintf_P(msg, PSTR("M117 Failed Switching Port: %u"), e);
-          queue.inject(msg);  
+          queue.inject(msg);
       }
       return;
     }
 
     if (e != port){
+      nextPort = e;
       if (too_cold(active_extruder)) {
         sprintf_P(msg, PSTR("M117 Extr too cold."));
-        queue.inject(msg);  
+        queue.inject(msg);
         return;
       }
 
@@ -146,10 +158,10 @@ void BAFSD::select_port(const uint8_t e) {
       tx_printf(F("T%d\n"), e);
 
       DEBUG_ECHOLNPGM("Move extruder motor to help gripping the filament");
-      const uint8_t slowMargin = 1000; // move extruder motor at the last second
+      const uint16_t slowMargin = 1200; // move extruder motor at the last moment
       safe_delay(BAFSD_FIL_CHANGE_DURATION - slowMargin);
       stepper.enable_extruder();
-      current_position.e += 15;
+      current_position.e += 20;
       line_to_current_position(MMM_TO_MMS(BAFSD_LOAD_FEEDRATE));
       planner.synchronize();
       stepper.disable_extruder();
@@ -179,11 +191,11 @@ void BAFSD::select_port(const uint8_t e) {
         }
       }
 
-      while (fil_present != 1 || !toolChangeOk){
+      while (fil_present != 1){
         DEBUG_ECHOLNPGM("Filament change failed: ", fil_present, "-", toolChangeOk);
         constexpr xyz_pos_t park_point = NOZZLE_PARK_POINT;
         if (pause_print(0, park_point, true, 0)) {
-          wait_for_confirmation(true, 0);
+          wait_for_confirmation(true, 5);
           resume_print(0, 0, 0, 0, 0);
           safe_delay(250);
           fil_present = load_to_sensor();
@@ -192,8 +204,9 @@ void BAFSD::select_port(const uint8_t e) {
       }
 
       sprintf_P(msg, PSTR("M117 BAFS Port: %u"), e);
-      queue.inject(msg);  
-      port = e;      
+      queue.inject(msg);
+      port = e;
+      nextPort = NO_PORT;
     }
 }
 
@@ -210,7 +223,7 @@ uint8_t BAFSD::filament_present(){
     return 1;
   } else {
     sprintf_P(msg, PSTR("M117 BAFSD Error: F. Sensor"));
-    queue.inject(msg);  
+    queue.inject(msg);
     return 2;
   }
 }
@@ -231,11 +244,11 @@ uint8_t BAFSD::load_to_sensor(){
       planner.synchronize();
       fil_loaded = filament_present();
       safe_delay(100);
-    } 
+    }
     stepper.disable_extruder();
   }
   DEBUG_ECHOLNPGM("Load to sensor: ", fil_loaded);
-  return fil_loaded;  
+  return fil_loaded;
 }
 
 void BAFSD::bafsd_loop() {
@@ -253,7 +266,7 @@ void BAFSD::bafsd_loop() {
     }
     now = millis();
   }
-  
+
   if (waitingResponse){
     DEBUG_ECHOLNPGM("Time out: ", response, " - ", now, " - ", expire_ms, " - ", waitingResponse);
     response = 2;

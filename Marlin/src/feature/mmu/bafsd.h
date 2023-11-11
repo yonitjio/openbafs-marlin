@@ -29,13 +29,16 @@ public:
   BAFSD();
   static void init();
   static void select_port(const uint8_t e);
+  static uint8_t current_port();
+  static uint8_t next_port();
   static void reset();
-  static void trigger_camera(const uint8_t d);
+  static void trigger_camera(const uint16_t d);
 
   static void bafsd_loop();
 
 private:
   static uint8_t port;
+  static uint8_t nextPort;
   static millis_t commandIssueTime;
   static int timeOut;
   static uint8_t response;

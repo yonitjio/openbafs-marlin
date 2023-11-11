@@ -2276,7 +2276,7 @@
 //
 // G60/G61 Position Save and Return
 //
-//#define SAVED_POSITIONS 1         // Each saved position slot costs 12 bytes
+#define SAVED_POSITIONS 2         // Each saved position slot costs 12 bytes
 
 //
 // G2/G3 Arc Support
@@ -3264,7 +3264,7 @@
  * Add the M240 G-code to take a photo.
  * The photo can be triggered by a digital pin or a physical movement.
  */
-//#define PHOTO_GCODE
+#define PHOTO_GCODE
 #if ENABLED(PHOTO_GCODE)
   // A position to move to (and raise Z) before taking the photo
   //#define PHOTO_POSITION { X_MAX_POS - 5, Y_MAX_POS, 0 }  // { xpos, ypos, zraise } (M240 X Y Z)
@@ -3297,6 +3297,15 @@
   //#define PHOTO_PULSES_US { 2000, 27850, 400, 1580, 400, 3580, 400 }  // (µs) Durations for each 48.4kHz oscillation
   #ifdef PHOTO_PULSES_US
     #define PHOTO_PULSE_DELAY_US 13 // (µs) Approximate duration of each HIGH and LOW pulse in the oscillation
+  #endif
+
+  #define BAFS_CAM
+  #ifdef BAFS_CAM
+    #ifdef PHOTO_SWITCH_MS
+      #define BAFS_CAM_DUR PHOTO_SWITCH_MS // ms
+    #else
+      #define BAFS_CAM_DUR 300 // ms
+    #endif
   #endif
 #endif
 
@@ -3721,7 +3730,7 @@
  * Add G-codes M810-M819 to define and run G-code macros.
  * Macros are not saved to EEPROM.
  */
-//#define GCODE_MACROS
+#define GCODE_MACROS
 #if ENABLED(GCODE_MACROS)
   #define GCODE_MACROS_SLOTS       5  // Up to 10 may be used
   #define GCODE_MACROS_SLOT_SIZE  50  // Maximum length of a single macro
@@ -3735,7 +3744,7 @@
 // @section custom main menu
 
 // Custom Menu: Main Menu
-// #define CUSTOM_MENU_MAIN
+#define CUSTOM_MENU_MAIN
 #if ENABLED(CUSTOM_MENU_MAIN)
   #define CUSTOM_MENU_MAIN_TITLE "User Script"
   #define CUSTOM_MENU_MAIN_SCRIPT_DONE "M117 User Script Done"
@@ -3762,6 +3771,18 @@
   #define MAIN_MENU_ITEM_5_DESC "Reset BAFS"
   #define MAIN_MENU_ITEM_5_GCODE "M709"
   //#define MAIN_MENU_ITEM_5_CONFIRM
+
+  #define MAIN_MENU_ITEM_6_DESC "Trigger Camera"
+  #define MAIN_MENU_ITEM_6_GCODE "M240"
+  // #define MAIN_MENU_ITEM_6_CONFIRM
+
+  #define MAIN_MENU_ITEM_7_DESC "En Cold Ext"
+  #define MAIN_MENU_ITEM_7_GCODE "M302 P1"
+  // #define MAIN_MENU_ITEM_7_CONFIRM
+
+  #define MAIN_MENU_ITEM_8_DESC "Dis Cold Ext"
+  #define MAIN_MENU_ITEM_8_GCODE "M302 P0"
+  // #define MAIN_MENU_ITEM_8_CONFIRM
 #endif
 
 // @section custom config menu

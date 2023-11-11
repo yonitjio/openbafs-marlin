@@ -188,7 +188,7 @@ void GcodeSuite::M240() {
   #endif
 
   #ifdef BAFS_CAM
-    bafsd.trigger_camera(BAFS_CAM_DUR);
+    bafsd.trigger_camera(parser.intval('D', BAFS_CAM_DUR));
   #endif
 
   #ifdef PHOTO_POSITION
